@@ -1,0 +1,35 @@
+spring:
+    datasource:
+        url: jdbc:mysql://localhost:3306/er-sols
+        username: root
+        password: password
+    jpa:
+        hibernate:
+            ddl-auto: update
+        show-sql: true
+    main:
+      banner-mode: "off"
+urls:
+  account-service: "localhost:8081"
+  vehicle-service: "localhost:8080"
+server:
+  port: 8084
+management:
+    endpoints:
+        web:
+            exposure:
+                include: prometheus, health, info
+---
+spring:
+  profiles: docker-compose
+  datasource:
+      url: jdbc:mysql://invoice-db:3306/invoice-db
+      username: root
+      password: accounts
+  jpa:
+    show-sql: false
+urls:
+  account-service: "account-service:8080"
+  vehicle-service: "vehicle-service:8080"
+server:
+  port: 8080
