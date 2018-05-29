@@ -1,4 +1,4 @@
-package com.s63d.ertripservice
+package com.s63d.erinvoiceservice
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
