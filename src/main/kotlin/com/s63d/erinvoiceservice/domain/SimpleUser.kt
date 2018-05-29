@@ -1,3 +1,9 @@
 package com.s63d.erinvoiceservice.domain
 
-data class SimpleUser(val firstName: String, val lastName: String, val address: String, val postal: String, val city: String)
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.Table
+
+@Entity
+@Table(name = "user")
+data class SimpleUser(val firstName: String, val lastName: String, val address: String, val postal: String, val city: String, @Id val id: Long)
