@@ -16,6 +16,7 @@ import java.util.*
 @Service
 class InvoiceService(private val invoiceRepository: InvoiceRepository, private val tripRepository: TripRepository, private val rateRepository: RateRepository, private val userRepository: UserRepository, private val tripClient: TripClient, private val vehicleClient : VehicleClient) {
 
+    //TODO Get Cartracker id from Car by all Users their (active) Ownerships
     fun createInvoice(carId: String) : Invoice {
         var length:Long = 0;
         val trips: List<Trip> = tripClient.getById(carId) ?: throw Exception("could not find trips")
@@ -25,15 +26,15 @@ class InvoiceService(private val invoiceRepository: InvoiceRepository, private v
 
         val user = SimpleUser("Piet", "Janssen", "Rachelsmolen 1","5709ZZ","Eindhoven", 1)
         userRepository.save(user)
-        val invoice = Invoice(user, Date(), InvoiceStatus.OPEN, 350.00, trips, length.toDouble(), 1)
+        val invoice = Invoice(user, Date(), InvoiceStatus.PAID, price * length, trips, length.toDouble(), 1)
 
         if(invoiceRepository.existsById(invoice.id))
             throw Exception("Invoice already registered")
         return invoiceRepository.save(invoice)
     }
 
-    fun getInvoice(clientId: Long) : List<Invoice> {
-        return invoiceRepository.findByClientId(clientId)
+    fun getInvoice(userId: Long) : List<Invoice> {
+        return invoiceRepository.findByUserId(userId)
     }
 
 }
