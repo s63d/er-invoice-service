@@ -11,5 +11,5 @@ class InvoiceController(private val invoiceService: InvoiceService) {
     fun createInvoice() = invoiceService.createInvoice("cf03efdc396d771162d9c38858bcfadc")
 
     @GetMapping
-    fun getByUserId(@RequestParam userId: Long) = invoiceService.getInvoice(id)
+    fun getByUserId(@RequestParam userId: Long) = invoiceService.getInvoice(userId)
 }
