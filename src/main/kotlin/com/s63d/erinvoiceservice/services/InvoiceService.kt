@@ -15,7 +15,6 @@ class InvoiceService(private val invoiceRepository: InvoiceRepository, private v
 
     fun createInvoice(carId: String) : Invoice {
         val trips: List<Trip> = tripClient.getById(carId) ?: throw Exception("could not find trips")
-        print(trips)
         trips.forEach { tripRepository.save(it) }
         val rate = vehicleClient.getById(carId)?.rate ?: throw Exception("could not find car")
         val invoice = Invoice("piet", Date(), InvoiceStatus.OPEN, 350.00, trips, 3544.00, 1)
