@@ -1,6 +1,6 @@
 spring:
     datasource:
-        url: jdbc:mysql://localhost:3306/er-sols
+        url: jdbc:mysql://localhost:1222/er-sols
         username: root
         password: password
     jpa:
@@ -12,6 +12,7 @@ spring:
 urls:
   account-service: "localhost:8081"
   vehicle-service: "localhost:8080"
+  trip-service: "localhost:8082"
 server:
   port: 8084
 management:
