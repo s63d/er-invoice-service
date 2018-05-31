@@ -5,4 +5,4 @@ import javax.persistence.Id
 import javax.persistence.OneToOne
 
 @Entity
-data class SimpleVehicle (val rate: String,@OneToOne val carTracker: Cartracker, @Id val id: String)
+data class Ownership(val startDate:  String, val endDate: String?, @OneToOne val vehicle: SimpleVehicle, @Id val id: Long)

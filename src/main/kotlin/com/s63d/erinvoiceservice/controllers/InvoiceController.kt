@@ -1,6 +1,8 @@
 package com.s63d.erinvoiceservice.controllers
 
 import com.s63d.erinvoiceservice.services.InvoiceService
+import org.springframework.data.domain.Pageable
+import org.springframework.http.HttpHeaders
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -8,8 +10,11 @@ import org.springframework.web.bind.annotation.*
 class InvoiceController(private val invoiceService: InvoiceService) {
 
     @PostMapping
-    fun createInvoice() = invoiceService.createInvoice("cf03efdc396d771162d9c38858bcfadc")
+    fun createInvoice(@RequestHeader(HttpHeaders.AUTHORIZATION) authHeader: String) = invoiceService.createInvoice(authHeader)
 
     @GetMapping
     fun getByUserId(@RequestParam userId: Long) = invoiceService.getInvoice(userId)
+
+    @GetMapping("/all")
+    fun getAllInvoices(pageable: Pageable) = invoiceService.getAllInvoices(pageable)
 }

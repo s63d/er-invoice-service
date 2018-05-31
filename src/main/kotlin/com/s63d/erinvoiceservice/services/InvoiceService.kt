@@ -1,40 +1,63 @@
 package com.s63d.erinvoiceservice.services
 
 import com.s63d.erinvoiceservice.clients.TripClient
+import com.s63d.erinvoiceservice.clients.UserClient
 import com.s63d.erinvoiceservice.clients.VehicleClient
-import com.s63d.erinvoiceservice.domain.Invoice
-import com.s63d.erinvoiceservice.domain.InvoiceStatus
-import com.s63d.erinvoiceservice.domain.SimpleUser
-import com.s63d.erinvoiceservice.domain.Trip
+import com.s63d.erinvoiceservice.domain.*
 import com.s63d.erinvoiceservice.repositories.InvoiceRepository
 import com.s63d.erinvoiceservice.repositories.RateRepository
 import com.s63d.erinvoiceservice.repositories.TripRepository
 import com.s63d.erinvoiceservice.repositories.UserRepository
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.util.*
+import kotlin.math.round
 
 @Service
-class InvoiceService(private val invoiceRepository: InvoiceRepository, private val tripRepository: TripRepository, private val rateRepository: RateRepository, private val userRepository: UserRepository, private val tripClient: TripClient, private val vehicleClient : VehicleClient) {
+class InvoiceService(private val invoiceRepository: InvoiceRepository, private val tripRepository: TripRepository, private val rateRepository: RateRepository, private val userRepository: UserRepository, private val tripClient: TripClient, private val vehicleClient : VehicleClient, private val userClient: UserClient) {
 
-    //TODO Get Cartracker id from Car by all Users their (active) Ownerships
-    fun createInvoice(carId: String) : Invoice {
-        var length:Long = 0;
-        val trips: List<Trip> = tripClient.getById(carId) ?: throw Exception("could not find trips")
-        trips.forEach { tripRepository.save(it);length+=it.length }
-        val rate = vehicleClient.getById(carId)?.rate ?: throw Exception("could not find car")
-        val price = rateRepository.findById(rate).get().price
+    fun createInvoice(authHeader:String) : List<Invoice> {
+        val users = userClient.getAllUsers(authHeader)
+        var invoices: List<Invoice> = listOf()
+        users.forEach {
+            invoices += generateInvoice(it,authHeader)
+        }
+        return invoices
+    }
+    //TODO REFACTOR
+    private fun generateInvoice(user: SimpleUser, authHeader: String): Invoice {
+        var price = 0.00
+        var totalLength = 0
+        var trips: List<Trip> = listOf()
 
-        val user = SimpleUser("Piet", "Janssen", "Rachelsmolen 1","5709ZZ","Eindhoven", 1)
+        val ownerShips = vehicleClient.getCurrentVehicles(user.id, authHeader)
+        ownerShips.forEach {
+            val vehicleId = it.vehicle.id
+            val allTripsFromVehicle = tripClient.getById(vehicleId) ?: throw Exception("could not find trips")
+            allTripsFromVehicle.forEach {
+                val rate = vehicleClient.getById(vehicleId)?.rate ?: throw Exception("could not find car")
+                price += it.length * rateRepository.findById(rate).get().price
+                totalLength += it.length.toInt()
+                tripRepository.save(it)
+            }
+            trips += allTripsFromVehicle
+        }
+
+        val invoice = Invoice(user, Date(), InvoiceStatus.OPEN, "%.2f".format(price), trips, totalLength.toDouble())
+
         userRepository.save(user)
-        val invoice = Invoice(user, Date(), InvoiceStatus.PAID, price * length, trips, length.toDouble(), 1)
-
         if(invoiceRepository.existsById(invoice.id))
             throw Exception("Invoice already registered")
         return invoiceRepository.save(invoice)
+
     }
 
     fun getInvoice(userId: Long) : List<Invoice> {
         return invoiceRepository.findByUserId(userId)
     }
+
+    fun getAllInvoices(pageable: Pageable) = invoiceRepository.findAll(pageable);
 
 }
