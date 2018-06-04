@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping
  @RequestMapping("/users")
  interface UserClient {
 
-     @GetMapping("/all")
-     fun getAllUsers(@RequestHeader("Authorization") token: String) : List<SimpleUser>
+     @GetMapping("{id}")
+     fun getUserById(@PathVariable id: Long, @RequestHeader("Authorization") token: String) : SimpleUser
 
- }
+}
