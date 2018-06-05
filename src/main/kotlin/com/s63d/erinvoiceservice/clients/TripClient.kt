@@ -1,15 +1,13 @@
 package com.s63d.erinvoiceservice.clients
 
-import com.s63d.erinvoiceservice.domain.Trip
+import com.s63d.erinvoiceservice.domain.rest.Trip
 import org.springframework.cloud.openfeign.FeignClient
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.*
 
-@FeignClient("trips", url = "\${urls.trip-service}/api")
 @RequestMapping("/trips")
+@FeignClient("trips", url = "\${urls.trip-service}/api")
 interface TripClient {
-    @GetMapping(value="?trackerId/{id}")
-    fun getById(@PathVariable("id") license: String) : List<Trip>?
+
+    @GetMapping
+    fun getById(@RequestHeader("Authorization") token: String, @RequestParam(value= "trackerId", required = true) trackerId: String) : List<Trip>?
 }

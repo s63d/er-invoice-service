@@ -1,6 +1,6 @@
 package com.s63d.erinvoiceservice.services
 
-import com.s63d.erinvoiceservice.domain.Rate
+import com.s63d.erinvoiceservice.domain.db.Rate
 import com.s63d.erinvoiceservice.repositories.RateRepository
 import org.springframework.stereotype.Service
 

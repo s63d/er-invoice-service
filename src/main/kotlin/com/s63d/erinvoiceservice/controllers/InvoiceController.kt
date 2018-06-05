@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/invoices")
 class InvoiceController(private val invoiceService: InvoiceService) {
 
-//    @PostMapping
-//    fun getVehicles(@RequestHeader(HttpHeaders.AUTHORIZATION) authHeader: String) = invoiceService.getVehicles(authHeader)
-
     @PostMapping
-    fun createInvoice(@RequestHeader(HttpHeaders.AUTHORIZATION) authHeader: String) = invoiceService.createInvoice(authHeader)
+    fun getVehicles(@RequestHeader(HttpHeaders.AUTHORIZATION) authHeader: String) = invoiceService.getVehicles(authHeader)
+
+//    @PostMapping
+//    fun createInvoice(@RequestHeader(HttpHeaders.AUTHORIZATION) authHeader: String) = invoiceService.createInvoice(authHeader)
 
     @GetMapping
     fun getByUserId(@RequestParam userId: Long) = invoiceService.getInvoice(userId)

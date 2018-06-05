@@ -1,6 +1,6 @@
 package com.s63d.erinvoiceservice.repositories
 
-import com.s63d.erinvoiceservice.domain.Invoice
+import com.s63d.erinvoiceservice.domain.db.Invoice
 import org.springframework.data.repository.PagingAndSortingRepository
 
 interface InvoiceRepository : PagingAndSortingRepository<Invoice, Long> {

@@ -1,10 +1,8 @@
 package com.s63d.erinvoiceservice.clients
 
-import com.s63d.erinvoiceservice.domain.SimpleVehicle
+import com.s63d.erinvoiceservice.domain.rest.SimplePage
+import com.s63d.erinvoiceservice.domain.rest.SimpleVehicle
 import org.springframework.cloud.openfeign.FeignClient
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageImpl
-import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
 
 
@@ -16,5 +14,5 @@ import org.springframework.web.bind.annotation.*
 //     fun getById(@PathVariable license: String) : SimpleVehicle?
 
      @GetMapping()
-     fun getCurrentVehicles(@RequestHeader("Authorization") token: String) : Page<SimpleVehicle>
+     fun getCurrentVehicles(@RequestHeader("Authorization") token: String) : SimplePage<SimpleVehicle>
  }
