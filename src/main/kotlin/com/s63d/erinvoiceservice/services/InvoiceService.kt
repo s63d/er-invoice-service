@@ -7,7 +7,6 @@ import com.s63d.erinvoiceservice.domain.db.Invoice
 import com.s63d.erinvoiceservice.domain.db.InvoiceLine
 import com.s63d.erinvoiceservice.domain.db.Rate
 import com.s63d.erinvoiceservice.domain.rest.InvoiceStatus
-import com.s63d.erinvoiceservice.domain.rest.SimpleVehicle
 import com.s63d.erinvoiceservice.domain.rest.Trip
 import com.s63d.erinvoiceservice.repositories.InvoiceLineRepository
 import com.s63d.erinvoiceservice.repositories.InvoiceRepository
@@ -15,8 +14,6 @@ import com.s63d.erinvoiceservice.repositories.RateRepository
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.util.*
-import java.text.DecimalFormat
-
 
 
 @Service
@@ -34,7 +31,7 @@ class InvoiceService(private val invoiceRepository: InvoiceRepository, private v
     private fun generateInvoice(authHeader: String, userId: Long, vehicleId: String, rate: Rate) {
         val invoiceLines : List<InvoiceLine> = generateInvoiceLines(authHeader, vehicleId, rate)
         val price = calculateTripPrice(invoiceLines)
-        if (invoiceLines.isNotEmpty()) invoiceRepository.save(Invoice(userId = userId, date = Date(), status = InvoiceStatus.OPEN, rate = rate, invoiceLine = invoiceLines, price = price))
+        if (invoiceLines.isNotEmpty()) invoiceRepository.save(Invoice(userId = userId, date = Date(), status = InvoiceStatus.OPEN, rate = rate, invoiceLines = invoiceLines, price = price))
     }
 
     private fun calculateTripPrice(invoiceLines: List<InvoiceLine>) : Double {
