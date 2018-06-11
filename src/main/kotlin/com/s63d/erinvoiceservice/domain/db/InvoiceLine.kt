@@ -6,4 +6,4 @@ import javax.persistence.Id
 import javax.persistence.OneToOne
 
 @Entity
-data class InvoiceLine (@Id @GeneratedValue val id: Long = 0, val tripId: Long, val length: Double, @OneToOne val rate: Rate)
+data class InvoiceLine (@Id @GeneratedValue val id: Long = 0, val tripId: Long, val length: Double, @OneToOne val rate: Rate, val price: Double)

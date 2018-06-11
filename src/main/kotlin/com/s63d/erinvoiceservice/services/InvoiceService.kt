@@ -20,19 +20,19 @@ import java.text.DecimalFormat
 
 
 @Service
-class InvoiceService(private val invoiceRepository: InvoiceRepository, private val rateRepository: RateRepository, private val invoiceLineRepository: InvoiceLineRepository,  private val tripClient: TripClient, private val vehicleClient: VehicleClient, private val userClient: UserClient) {
+class InvoiceService(private val invoiceRepository: InvoiceRepository, private val rateRepository: RateRepository, private val tripClient: TripClient, private val vehicleClient: VehicleClient) {
     fun getVehicles(authHeader: String) {
         val listvehicles = vehicleClient.getCurrentVehicles(authHeader).content
         listvehicles.forEach {
             if (it.carTrackerId != null) {
                 val vehicleRate = rateRepository.findById(it.rate).get()
-                generateInvoice(authHeader,it.ownerId, it.carTrackerId, vehicleRate)
+                generateInvoice(authHeader,it.ownerId, it.id, vehicleRate)
             }
         }
     }
 
-    private fun generateInvoice(authHeader: String, userId: Long, trackId: String, rate: Rate) {
-        val invoiceLines : List<InvoiceLine> = generateInvoiceLines(authHeader, trackId, rate)
+    private fun generateInvoice(authHeader: String, userId: Long, vehicleId: String, rate: Rate) {
+        val invoiceLines : List<InvoiceLine> = generateInvoiceLines(authHeader, vehicleId, rate)
         val price = calculateTripPrice(invoiceLines)
         if (invoiceLines.isNotEmpty()) invoiceRepository.save(Invoice(userId = userId, date = Date(), status = InvoiceStatus.OPEN, rate = rate, invoiceLine = invoiceLines, price = price))
     }
@@ -46,12 +46,12 @@ class InvoiceService(private val invoiceRepository: InvoiceRepository, private v
         return price
     }
 
-    private fun generateInvoiceLines(authHeader: String, trackId: String, rate: Rate): List<InvoiceLine> {
+    private fun generateInvoiceLines(authHeader: String, vehicleId: String, rate: Rate): List<InvoiceLine> {
         var trips: List<Trip> = listOf()
-        trips += tripClient.getById(authHeader, trackId)?: throw Exception("could not find trips")
+        trips += tripClient.getById(authHeader, vehicleId)?.content ?: throw Exception("could not find trips")
         var invoiceLines: List<InvoiceLine> = listOf()
         trips.forEach {
-            invoiceLines += InvoiceLine(tripId = it.tripId, length = it.length, rate = rate)
+            invoiceLines += InvoiceLine(tripId = it.tripId, length = it.length, rate = rate, price = it.length / 1000 * rate.price)
         }
         return invoiceLines
     }
