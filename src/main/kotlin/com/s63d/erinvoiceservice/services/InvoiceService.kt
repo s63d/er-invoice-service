@@ -8,16 +8,26 @@ import com.s63d.erinvoiceservice.domain.db.InvoiceLine
 import com.s63d.erinvoiceservice.domain.db.Rate
 import com.s63d.erinvoiceservice.domain.rest.InvoiceStatus
 import com.s63d.erinvoiceservice.domain.rest.Trip
-import com.s63d.erinvoiceservice.repositories.InvoiceLineRepository
 import com.s63d.erinvoiceservice.repositories.InvoiceRepository
 import com.s63d.erinvoiceservice.repositories.RateRepository
 import org.springframework.data.domain.Pageable
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service
 import java.util.*
+import org.springframework.beans.factory.annotation.Autowired
+
+
 
 
 @Service
 class InvoiceService(private val invoiceRepository: InvoiceRepository, private val rateRepository: RateRepository, private val tripClient: TripClient, private val vehicleClient: VehicleClient) {
+    private var rabbitTemplate: RabbitTemplate? = null
+
+    @Autowired
+    fun InvoiceService(rabbitTemplate: RabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate
+    }
+
     fun getVehicles(authHeader: String) {
         val listvehicles = vehicleClient.getCurrentVehicles(authHeader).content
         listvehicles.forEach {
