@@ -1,4 +1,4 @@
-package com.s63d.ertripservice.config
+package com.s63d.erinvoiceservice.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
