@@ -1,5 +1,6 @@
 package com.s63d.erinvoiceservice.consumer
 
+import com.s63d.erinvoiceservice.domain.rest.ForeignResponse
 import com.s63d.erinvoiceservice.domain.rest.InternRequest
 import com.s63d.erinvoiceservice.domain.rest.InternResponse
 import com.s63d.erinvoiceservice.repositories.RateRepository
@@ -19,12 +20,18 @@ class ForeignConsumer (private val rabbitTemplate: RabbitTemplate, private val r
     @RabbitListener(bindings = [(QueueBinding(value = Queue("INTERN_AT_REQ"), exchange = Exchange("AT"), key = ["req"]))])
     fun handle(internRequest: InternRequest) {
         logger.info("Receiving message from inside: " + internRequest)
+        logger.info("Country = ${internRequest.country}")
         val rate = rateRepository.findById(getRateForWeight(internRequest.vehicleWeight).toString()).get()
         logger.info("Rate: " + rate)
         val ratePrice = rate.price
         var price = 0.00
         price += internRequest.distance / 1000 * ratePrice
         rabbitTemplate.convertAndSend("AT", "resp", InternResponse(internRequest.id, internRequest.distance, price, ratePrice, rate.category, internRequest.country))
+    }
+
+    @RabbitListener(bindings = [(QueueBinding(value = Queue("INTERN_AT_PARTS"), exchange = Exchange("AT"), key = ["part"]))])
+    fun handleParts(foreignResponse: ForeignResponse) {
+        logger.info("Receiving foreignRespoinse:  $foreignResponse")
     }
 
     private fun getRateForWeight(weight: Int): Char {
