@@ -18,7 +18,7 @@ import java.util.*
 
 
 @Service
-class InvoiceService(private val invoiceRepository: InvoiceRepository, private val invoiceLinePartRepository: InvoiceLinePartRepository, private val rateRepository: RateRepository, private val tripClient: TripClient, private val vehicleClient: VehicleClient, private val userClient: UserClient) {
+class InvoiceService(private val invoiceRepository: InvoiceRepository, private val invoiceLinePartRepository: InvoiceLinePartRepository, private val tripClient: TripClient, private val vehicleClient: VehicleClient, private val userClient: UserClient) {
 
     fun getVehicles(authHeader: String) {
         val listvehicles = vehicleClient.getCurrentVehicles(authHeader).content
