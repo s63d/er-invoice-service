@@ -1,8 +1,12 @@
 package com.s63d.erinvoiceservice.consumer
 
+import com.s63d.erinvoiceservice.domain.db.InvoiceLinePart
+import com.s63d.erinvoiceservice.domain.db.InvoiceLinePartDetail
+import com.s63d.erinvoiceservice.domain.rest.ForeignDetails
 import com.s63d.erinvoiceservice.domain.rest.ForeignResponse
 import com.s63d.erinvoiceservice.domain.rest.InternRequest
 import com.s63d.erinvoiceservice.domain.rest.InternResponse
+import com.s63d.erinvoiceservice.repositories.InvoiceLinePartRepository
 import com.s63d.erinvoiceservice.repositories.RateRepository
 import org.slf4j.LoggerFactory
 import org.springframework.amqp.rabbit.annotation.Exchange
@@ -14,7 +18,7 @@ import org.springframework.messaging.handler.annotation.Header
 import org.springframework.stereotype.Component
 
 @Component
-class ForeignConsumer (private val rabbitTemplate: RabbitTemplate, private val rateRepository: RateRepository) {
+class ForeignConsumer (private val rabbitTemplate: RabbitTemplate, private val rateRepository: RateRepository, private val invoiceLinePartRepository: InvoiceLinePartRepository) {
     val logger = LoggerFactory.getLogger(this::class.java!!)
 
     @RabbitListener(bindings = [(QueueBinding(value = Queue("INTERN_AT_REQ"), exchange = Exchange("AT"), key = ["req"]))])
@@ -32,6 +36,14 @@ class ForeignConsumer (private val rabbitTemplate: RabbitTemplate, private val r
     @RabbitListener(bindings = [(QueueBinding(value = Queue("INTERN_AT_PARTS"), exchange = Exchange("AT"), key = ["part"]))])
     fun handleParts(foreignResponse: ForeignResponse) {
         logger.info("Receiving foreignRespoinse:  $foreignResponse")
+        var details : List<ForeignDetails> = listOf()
+        details += foreignResponse.details
+        var partdetails : List<InvoiceLinePartDetail> = listOf()
+        details.forEach {
+            partdetails += InvoiceLinePartDetail(description = it.description)
+            invoiceLinePartRepository.save(InvoiceLinePart(tripid = foreignResponse.id, price = foreignResponse.price, length = foreignResponse.distance, vat = foreignResponse.vat, origin = foreignResponse.origin, details = partdetails))
+        }
+
     }
 
     private fun getRateForWeight(weight: Int): Char {
