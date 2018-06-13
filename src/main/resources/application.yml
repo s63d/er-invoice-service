@@ -2,7 +2,7 @@ spring:
     rabbitmq:
       host: ersols.online
     datasource:
-        url: jdbc:mysql://localhost:1222/er-sols
+        url: jdbc:mysql://localhost:3306/er-sols
         username: root
         password: password
     jpa:
