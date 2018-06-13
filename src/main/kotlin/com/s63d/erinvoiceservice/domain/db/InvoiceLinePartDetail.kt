@@ -5,4 +5,4 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Id
 
 @Entity
-data class InvoiceLinePartDetail(@Id @GeneratedValue val id: Long = 0, val description: String)
+data class InvoiceLinePartDetail(@Id @GeneratedValue val id: Long = 0, val rate: Double, val description: String)

@@ -16,7 +16,7 @@ class InvoiceController(private val invoiceService: InvoiceService) {
 //    fun createInvoice(@RequestHeader(HttpHeaders.AUTHORIZATION) authHeader: String) = invoiceService.createInvoice(authHeader)
 
     @GetMapping("/parts")
-    fun getByTripid(@RequestParam tripId: String) = invoiceService.getInvoiceLinePart(tripId)
+    fun getByTripid(@RequestParam tripId: Long) = invoiceService.getInvoiceLinePart(tripId)
 
     @GetMapping
     fun getByUserId(@RequestParam userId: Long) = invoiceService.getInvoice(userId)

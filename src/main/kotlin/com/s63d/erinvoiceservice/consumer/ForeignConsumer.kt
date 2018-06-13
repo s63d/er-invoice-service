@@ -40,10 +40,9 @@ class ForeignConsumer (private val rabbitTemplate: RabbitTemplate, private val r
         details += foreignResponse.details
         var partdetails : List<InvoiceLinePartDetail> = listOf()
         details.forEach {
-            partdetails += InvoiceLinePartDetail(description = it.description)
-            invoiceLinePartRepository.save(InvoiceLinePart(tripid = foreignResponse.id, price = foreignResponse.price, length = foreignResponse.distance, vat = foreignResponse.vat, origin = foreignResponse.origin, details = partdetails))
+            partdetails += InvoiceLinePartDetail(description = it.description, rate = it.rate)
         }
-
+        invoiceLinePartRepository.save(InvoiceLinePart(tripId = foreignResponse.id.toLong(), price = foreignResponse.price, distance = foreignResponse.distance, vat = foreignResponse.vat, origin = foreignResponse.origin, details = partdetails))
     }
 
     private fun getRateForWeight(weight: Int): Char {
