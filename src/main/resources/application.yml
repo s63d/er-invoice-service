@@ -1,4 +1,6 @@
 spring:
+    rabbitmq:
+      host: ersols.online
     datasource:
         url: jdbc:mysql://localhost:1222/er-sols
         username: root
@@ -34,3 +36,4 @@ urls:
   vehicle-service: "vehicle-service:8080"
 server:
   port: 8080
+

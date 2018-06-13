@@ -1,9 +1,6 @@
 package com.s63d.erinvoiceservice.domain.db
 
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.OneToOne
+import javax.persistence.*
 
 @Entity
-data class InvoiceLine (@Id @GeneratedValue val id: Long = 0, val tripId: Long, val length: Double, @OneToOne val rate: Rate, val price: Double)
+data class InvoiceLine (@Id @GeneratedValue val id: Long = 0, val tripId: Long, val distance: Int, val price: Double, @OneToMany(cascade = [CascadeType.ALL]) val parts: List<InvoiceLinePart>)
