@@ -33,7 +33,7 @@ class InvoiceService(private val invoiceRepository: InvoiceRepository, private v
         val invoiceLines : List<InvoiceLine> = generateInvoiceLines(authHeader, vehicleId)
 
         val user = userClient.getUserById(userId, authHeader)
-        if (invoiceLines.isNotEmpty()) invoiceRepository.save(Invoice(user = user, date = Date(), status = InvoiceStatus.OPEN, lines = invoiceLines, price = invoiceLines.map { it.price }.sum()))
+        if (invoiceLines.isNotEmpty()) invoiceRepository.save(Invoice(user = user, vehicleId = vehicleId, date = Date(), status = InvoiceStatus.OPEN, lines = invoiceLines, price = invoiceLines.map { it.price }.sum(), distance = invoiceLines.sumBy { it.distance }))
     }
 
     private fun generateInvoiceLines(authHeader: String, vehicleId: String): List<InvoiceLine> {
@@ -42,17 +42,17 @@ class InvoiceService(private val invoiceRepository: InvoiceRepository, private v
         var invoiceLines: List<InvoiceLine> = listOf()
         trips.forEach {
             val parts = invoiceLinePartRepository.findByTripId(it.tripId)
-            invoiceLines += InvoiceLine(tripId = it.tripId, distance = parts.map { it.distance }.sum(), price = parts.map { it.price }.sum(), parts = parts)
+            invoiceLines += InvoiceLine(tripId = it.tripId, distance = parts.sumBy { it.distance }, price = parts.map { it.price }.sum(), parts = parts)
         }
         return invoiceLines
     }
 
-    fun getInvoice(userId: Long): List<Invoice> {
+    fun getInvoices(userId: Long): List<Invoice> {
         return invoiceRepository.findByUserId(userId)
     }
 
-    fun getInvoiceLinePart(tripid: Long) : List<InvoiceLinePart> {
-        return invoiceLinePartRepository.findByTripId(tripid)
+    fun getInvoiceById(id: Long) : Invoice {
+        return invoiceRepository.findById(id).get()
     }
 
     fun getAllInvoices(pageable: Pageable) = invoiceRepository.findAll(pageable);
