@@ -63,6 +63,7 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-amqp')
     compile('com.fasterxml.jackson.module:jackson-module-kotlin')
     compile('org.springframework.cloud:spring-cloud-starter-openfeign')
+    compile("com.paypal.sdk:rest-api-sdk:1.14.0")
     compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     compile("org.jetbrains.kotlin:kotlin-reflect")
     runtime('mysql:mysql-connector-java')
