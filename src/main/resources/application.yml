@@ -2,7 +2,7 @@ spring:
     rabbitmq:
       host: ersols.online
     datasource:
-        url: jdbc:mysql://localhost:1222/er-sols
+        url: jdbc:mysql://localhost:3306/er-sols
         username: root
         password: password
     jpa:
@@ -34,6 +34,7 @@ spring:
 urls:
   account-service: "account-service:8080"
   vehicle-service: "vehicle-service:8080"
+  trip-service: "trip-service:8080"
 server:
   port: 8080
 
