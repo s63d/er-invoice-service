@@ -13,4 +13,7 @@ class RateController(private val rateService: RateService) {
 
     @PutMapping
     fun updateRate(@RequestParam category: String, @RequestParam price: Double?) = rateService.updateRate(category, price)
+
+    @GetMapping
+    fun getRate() = rateService.getRate()
 }

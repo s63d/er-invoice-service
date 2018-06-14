@@ -13,4 +13,8 @@ class RateService(private val rateRepository: RateRepository) {
         rate.price = price ?: rate.price
         return rateRepository.save(rate)
     }
+
+    fun getRate() : Iterable<Rate>  {
+        return rateRepository.findAll()
+    }
 }
