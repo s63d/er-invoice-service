@@ -5,13 +5,10 @@ import com.s63d.erinvoiceservice.clients.UserClient
 import com.s63d.erinvoiceservice.clients.VehicleClient
 import com.s63d.erinvoiceservice.domain.db.Invoice
 import com.s63d.erinvoiceservice.domain.db.InvoiceLine
-import com.s63d.erinvoiceservice.domain.db.InvoiceLinePart
-import com.s63d.erinvoiceservice.domain.db.Rate
 import com.s63d.erinvoiceservice.domain.rest.InvoiceStatus
 import com.s63d.erinvoiceservice.domain.rest.Trip
 import com.s63d.erinvoiceservice.repositories.InvoiceLinePartRepository
 import com.s63d.erinvoiceservice.repositories.InvoiceRepository
-import com.s63d.erinvoiceservice.repositories.RateRepository
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.util.*
@@ -55,6 +52,11 @@ class InvoiceService(private val invoiceRepository: InvoiceRepository, private v
         return invoiceRepository.findById(id).get()
     }
 
-    fun getAllInvoices(pageable: Pageable) = invoiceRepository.findAll(pageable);
+    fun getAllInvoices(pageable: Pageable) = invoiceRepository.findAll(pageable)
 
+    fun updateInvoicePaid(vehicleId: Long, paid: Boolean) {
+        val inv = invoiceRepository.findById(vehicleId).orElseThrow { Exception("Invoice with id $vehicleId does not exist") }
+        inv.status = if (paid) InvoiceStatus.PAID else InvoiceStatus.OPEN
+        invoiceRepository.save(inv)
+    }
 }
