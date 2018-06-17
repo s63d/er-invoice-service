@@ -23,6 +23,6 @@ class InvoiceController(private val invoiceService: InvoiceService) {
     @GetMapping("/all")
     fun getAllInvoices(pageable: Pageable) = invoiceService.getAllInvoices(pageable)
 
-    @PostMapping("paid")
+    @PostMapping("/paid")
     fun updateInvoicePaid(@RequestParam id: Long, @RequestParam paid: Boolean) = invoiceService.updateInvoicePaid(id, paid)
 }
