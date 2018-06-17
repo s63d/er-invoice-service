@@ -11,8 +11,8 @@ class RateController(private val rateService: RateService) {
     @PostMapping
     fun createRate(@RequestParam category: String, @RequestParam price: Double) = rateService.createRate(category, price)
 
-    @PutMapping
-    fun updateRate(@RequestParam category: String, @RequestParam price: Double?) = rateService.updateRate(category, price)
+    @PostMapping("{category}")
+    fun updateRate(@PathVariable("category") category: String, @RequestParam price: Double?) = rateService.updateRate(category, price)
 
     @GetMapping
     fun getRate() = rateService.getRate()
